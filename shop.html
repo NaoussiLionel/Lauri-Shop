@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shop - Customer Interface</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts (Preload defaults + others potentially needed) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Link tags for specific fonts will be added dynamically by JS -->
+    <style>
+        :root {
+            /* Default values, will be overridden by JS */
+            --primary: #0D47A1; /* Deep Blue */
+            --secondary: #E0F7FA; /* Light Cyan */
+            --cta: #00796B; /* Teal */
+            --whatsapp-cta: #25d366; /* WhatsApp Green */
+            --accent: #FF9800; /* Orange */
+            --danger: #d93025;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border: #dee2e6;
+            --radius: 8px;
+            --shadow: rgba(0, 0, 0, 0.05);
+            --shadow-strong: rgba(0, 0, 0, 0.1);
+            /* Font variables will be set by JS */
+            --font-family-main: 'Manrope', sans-serif;
+            --font-family-desc: 'Sora', sans-serif;
+            --nav-height: 65px; /* Slightly taller nav */
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: var(--font-family-main); /* Use main font */
+            background: var(--bg);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 60px; /* Space for fixed header */
+            padding-bottom: var(--nav-height); /* Prevent content overlap with bottom nav */
+        }
+
+        /* --- Header --- */
+        header {
+            position: fixed; /* Fixed header */
+            top: 0; left: 0; right: 0;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 2px 4px var(--shadow);
+            height: 60px;
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+            flex-shrink: 0;
+            font-family: var(--font-family-desc); /* Use desc font */
+            margin-right: 1rem;
+        }
+        .search-bar {
+            flex-grow: 1;
+            position: relative;
+            max-width: 600px;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 2.8rem 0.7rem 1.2rem; /* More padding */
+            border-radius: 25px; /* Pill shape */
+            border: 1px solid var(--border);
+            font-size: 1rem;
+            outline: none;
+            transition: box-shadow 0.3s, border-color 0.3s;
+            background-color: var(--bg); /* Slightly different background */
+        }
+        .search-bar input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--secondary);
+            background-color: var(--card-bg);
+        }
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+        .nav-icons { display: flex; gap: 0.5rem; /* Reduced gap */ align-items: center; }
+        .nav-icons span {
+            cursor: pointer;
+            position: relative;
+            padding: 8px; /* Click area */
+            font-size: 1.4rem; /* Slightly smaller icons */
+            color: var(--text-secondary);
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s;
+        }
+         .nav-icons span:hover {
+             background-color: var(--secondary);
+             color: var(--primary);
+         }
+        .nav-icons .cart-count {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            background-color: var(--danger);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 5px;
+            border-radius: 50%;
+            font-weight: bold;
+            display: none; /* Hidden initially */
+        }
+
+        /* Main Content */
+        main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1.5rem 1rem; /* More vertical padding */
+        }
+        .section { margin-bottom: 2.5rem; } /* More space between sections */
+        .section h2 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.5rem; /* Larger section titles */
+            color: var(--text-primary);
+            font-family: var(--font-family-desc); /* Use desc font */
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block; /* Make border only width of text */
+        }
+        .shop-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Horizontal scroll container - Play Store Style */
+        .horizontal-scroll-container {
+             /* Optional: Add padding if needed */
+        }
+        .horizontal-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem; /* Space between cards */
+            padding: 0.5rem 0.2rem 1rem 0.2rem; /* Padding for scrollbar and visual space */
+            /* Hide scrollbar visually */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
+        }
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        /* Product Card - Play Store Inspired */
+        .product-card {
+            background: var(--card-bg);
+            /* No border, rely on shadow */
+            border-radius: var(--radius);
+            box-shadow: 0 2px 5px var(--shadow);
+            width: 170px; /* Consistent width */
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            overflow: hidden;
+            cursor: pointer; /* Indicate clickable */
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px var(--shadow-strong);
+        }
+        .product-image {
+            height: 120px; /* Slightly smaller image */
+            background-size: cover;
+            background-position: center;
+            background-color: #f0f0f0; /* Placeholder color */
+            border-bottom: 1px solid var(--border);
+        }
+        .product-info {
+            padding: 0.8rem; /* Consistent padding */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        .product-title {
+            font-weight: 500; /* Medium weight */
+            font-size: 0.95rem;
+            margin: 0 0 0.25rem 0;
+            color: var(--text-primary);
+            line-height: 1.3;
+            height: 2.6em; /* Limit to 2 lines */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+             -webkit-line-clamp: 2;
+             -webkit-box-orient: vertical;
+        }
+        .product-category { /* Display category subtly */
+             font-size: 0.75rem;
+             color: var(--text-secondary);
+             margin-bottom: 0.4rem;
+        }
+        .product-meta { /* Group price and rating */
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             margin-bottom: 0.75rem;
+             margin-top: auto; /* Push to bottom */
+        }
+        .product-price {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        .product-rating {
+            color: var(--text-secondary); /* Subtler rating color */
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .product-rating i { color: var(--accent); } /* Star color */
+
+        .add-to-cart-btn {
+            background: var(--cta); /* Use Teal */
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem; /* Space above button */
+            width: 100%; /* Full width button */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .add-to-cart-btn:hover {
+            background-color: #005a4e; /* Darker Teal */
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            padding: 3rem 1rem;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            margin-top: 2rem;
+            user-select: none;
+            background-color: #fafafa;
+        }
+
+        /* Bottom Navigation Bar - Play Store Style */
+        nav.bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg); /* White background */
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.3rem 0; /* Reduced padding */
+            box-shadow: 0 -2px 5px var(--shadow);
+            z-index: 1000;
+            height: var(--nav-height);
+        }
+        nav.bottom-nav button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.1rem; /* Slightly smaller icons */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Center content vertically */
+            cursor: pointer;
+            padding: 0.25rem 0;
+            transition: color 0.3s;
+            user-select: none;
+            flex-grow: 1;
+            position: relative; /* For badge */
+            height: 100%; /* Ensure button takes full height */
+        }
+        nav.bottom-nav button.active { color: var(--primary); }
+        nav.bottom-nav button:hover { color: var(--primary); } /* Hover effect */
+        nav.bottom-nav button span { /* Text label */
+            font-size: 0.7rem; /* Smaller text */
+            margin-top: 0.2rem;
+            font-weight: 500;
+        }
+        nav.bottom-nav button .cart-count-nav { /* Badge for nav */
+             position: absolute;
+             top: 5px; /* Adjusted position */
+             right: calc(50% - 20px); /* Center badge relative to icon */
+             background-color: var(--danger);
+             color: white;
+             font-size: 0.7rem;
+             padding: 2px 5px;
+             border-radius: 50%;
+             font-weight: bold;
+             display: none;
+        }
+
+
+        /* Cart Summary Bar (Hidden by default, shown when items are in cart) */
+        .cart-summary {
+            padding: 0.8rem 1rem;
+            border-top: 1px solid var(--border);
+            background: var(--secondary);
+            box-shadow: 0 -2px 6px var(--shadow);
+            position: fixed; /* Fixed position */
+            bottom: var(--nav-height); /* Above bottom nav */
+            left: 0; right: 0;
+            display: none; /* Hidden initially */
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+            transition: bottom 0.3s ease-in-out; /* Smooth transition */
+        }
+        .cart-summary.visible {
+            display: flex;
+        }
+        .cart-total { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+        .whatsapp-button {
+            background: var(--whatsapp-cta); /* Use WhatsApp Green */
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(37, 211, 102, 0.4);
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .whatsapp-button:hover { background-color: #1ebe57; }
+
+        /* Cart Modal */
+        .cart-modal {
+            display: none; position: fixed; z-index: 1100; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); /* Darker overlay */
+            align-items: flex-end; /* Align to bottom */
+            justify-content: center;
+        }
+        .cart-modal.visible {
+            display: flex;
+        }
+        .cart-modal-content {
+            background-color: var(--bg);
+            width: 100%;
+            max-width: 600px; /* Max width for larger screens */
+            border-radius: var(--radius) var(--radius) 0 0; /* Rounded top corners */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            max-height: 85vh; /* Limit height */
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .cart-modal-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0; /* Prevent header shrinking */
+        }
+        .cart-modal-header h2 { margin: 0; font-size: 1.4rem; font-family: var(--font-family-desc); }
+        .close-cart-btn { font-size: 1.8rem; color: var(--text-secondary); background: none; border: none; cursor: pointer; line-height: 1; padding: 5px; }
+        .cart-modal-body { padding: 1.5rem; overflow-y: auto; flex-grow: 1; }
+        .cart-item {
+            display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+            padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+        }
+        .cart-item:last-child { border-bottom: none; margin-bottom: 0; }
+        .cart-item-image { width: 70px; height: 70px; border-radius: var(--radius); background-size: cover; background-position: center; flex-shrink: 0; border: 1px solid var(--border); }
+        .cart-item-details { flex-grow: 1; }
+        .cart-item-title { font-weight: 600; margin: 0 0 0.3rem 0; font-size: 1rem; }
+        .cart-item-price { color: var(--primary); font-size: 0.9rem; margin-bottom: 0.7rem; }
+        .cart-item-quantity { display: flex; align-items: center; gap: 0.75rem; }
+        .cart-item-quantity button {
+            background: var(--secondary); border: 1px solid var(--border); color: var(--primary);
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem; line-height: 1;
+            transition: background-color 0.2s;
+        }
+         .cart-item-quantity button:hover {
+             background-color: #ccecf4; /* Slightly darker secondary */
+         }
+        .cart-item-quantity span { font-weight: 500; min-width: 25px; text-align: center; font-size: 1.1rem; }
+        .cart-item-remove { background: none; border: none; color: var(--danger); font-size: 1.3rem; cursor: pointer; margin-left: auto; padding: 5px; }
+         .cart-item-remove:hover { color: #a32b2b; }
+        .cart-modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            background-color: var(--card-bg); /* Match modal background */
+            text-align: right;
+            flex-shrink: 0; /* Prevent footer shrinking */
+            box-shadow: 0 -2px 5px var(--shadow);
+        }
+        .cart-modal-total { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-align: left; color: var(--text-primary); }
+
+        /* Netlify Form specific - hidden fields */
+        .hidden-netlify-form-fields {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            body { padding-top: 56px; } /* Adjust for potentially smaller header */
+            header { height: 56px; padding: 0.5rem 0.8rem; }
+            .logo { font-size: 1.1rem; margin-right: 0.5rem; }
+            .search-bar input { padding: 0.6rem 2.5rem 0.6rem 1rem; font-size: 0.9rem; }
+            .search-icon { right: 0.8rem; font-size: 1.1rem; }
+            .nav-icons { gap: 0.2rem; }
+            .nav-icons span { font-size: 1.3rem; padding: 6px; }
+            main { padding: 1rem 0.8rem; }
+            .section h2 { font-size: 1.3rem; }
+            .product-card { width: 150px; }
+            .product-image { height: 100px; }
+            .product-title { font-size: 0.9rem; height: 2.4em; }
+            .product-price { font-size: 0.95rem; }
+            .add-to-cart-btn { font-size: 0.8rem; padding: 0.5rem 0.8rem; }
+            nav.bottom-nav button { font-size: 1rem; }
+            nav.bottom-nav button span { font-size: 0.65rem; }
+            .cart-summary { padding: 0.6rem 1rem; }
+            .cart-total { font-size: 1rem; }
+            .whatsapp-button { font-size: 0.9rem; padding: 0.6rem 1.2rem; }
+            .cart-modal-content { max-height: 90vh; } /* Allow slightly more height */
+            .cart-modal-header h2 { font-size: 1.2rem; }
+            .cart-modal-body { padding: 1rem; }
+            .cart-item { gap: 0.8rem; }
+            .cart-item-image { width: 60px; height: 60px; }
+            .cart-item-title { font-size: 0.95rem; }
+            .cart-item-price { font-size: 0.85rem; }
+            .cart-item-quantity button { width: 28px; height: 28px; font-size: 1rem; }
+            .cart-item-quantity span { font-size: 1rem; }
+            .cart-modal-footer { padding: 0.8rem 1rem; }
+            .cart-modal-total { font-size: 1.1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .product-card { width: 140px; } /* Even smaller cards */
+            .product-image { height: 90px; }
+            .horizontal-scroll { gap: 0.8rem; }
+            .search-bar { max-width: 250px; } /* Allow logo more space */
+            .cart-item-image { width: 50px; height: 50px; }
+            .cart-item-details { /* Stack details vertically */
+                 display: flex; flex-direction: column; align-items: flex-start;
+            }
+            .cart-item-price { margin-bottom: 0.5rem; }
+            .cart-item-quantity { margin-top: 0.3rem; }
+        }
+
+         /* Toast Notification Style */
+         .toast-notification {
+            position: fixed;
+            bottom: calc(var(--nav-height) + 15px); /* Position above nav bar */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            z-index: 1500;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.5s ease, bottom 0.5s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast-notification.show {
+            opacity: 1;
+            bottom: calc(var(--nav-height) + 25px); /* Move up slightly when shown */
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" id="space-name">Shop Name</div>
+        <div class="search-bar">
+            <input type="search" id="search-input" placeholder="Search products..." />
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+        </div>
+        <div class="nav-icons">
+            <span id="cart-icon" title="Cart">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="header-cart-count">0</span>
+            </span>
+            <!-- <span id="profile-icon" title="Profile"><i class="fas fa-user"></i></span> -->
+        </div>
+    </header>
+    <main>
+        <section class="section shop-info-section">
+             <p id="shop-description" class="shop-description">Loading shop description...</p>
+        </section>
+
+        <section class="section top-picks-section">
+            <h2>Top Picks</h2>
+            <div class="horizontal-scroll-container">
+                <div class="horizontal-scroll" id="top-picks-container"></div>
+            </div>
+            <div id="empty-top-picks" class="empty-state" style="display:none;">No top picks available right now.</div>
+        </section>
+
+        <section class="section trending-section">
+            <h2>Trending Items</h2>
+             <div class="horizontal-scroll-container">
+                <div class="horizontal-scroll" id="trending-container"></div>
+            </div>
+            <div id="empty-trending" class="empty-state" style="display:none;">No trending items to show.</div>
+        </section>
+
+        <section class="section all-products-section">
+            <h2>All Products</h2>
+            <!-- Add filters/sorting options here later if needed -->
+             <div class="horizontal-scroll-container">
+                <div class="horizontal-scroll" id="all-products-container">
+                    <!-- Products loaded here -->
+                </div>
+             </div>
+            <div id="empty-all-products" class="empty-state" style="display:none;">No products found. Check back later!</div>
+        </section>
+    </main>
+    <nav class="bottom-nav">
+        <button class="active" id="nav-home" aria-label="Home">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </button>
+        <button id="nav-categories" aria-label="Categories">
+            <i class="fas fa-tags"></i>
+            <span>Categories</span>
+        </button>
+        <button id="nav-cart" aria-label="Cart">
+             <i class="fas fa-shopping-cart"></i>
+             <span class="cart-count-nav" id="nav-cart-count">0</span>
+            <span>Cart</span>
+        </button>
+        <button id="nav-profile" aria-label="Profile">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </button>
+    </nav>
+
+    <!-- Cart Summary Bar -->
+    <div class="cart-summary" id="cart-summary">
+        <div class="cart-total" id="cart-total">Total: 0 FCFA</div>
+        <!-- This button now triggers the form submission -->
+        <button class="whatsapp-button" id="whatsapp-checkout-bar" type="submit" form="netlify-checkout-form">
+            <i class="fab fa-whatsapp"></i> Checkout
+        </button>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-modal-content">
+            <div class="cart-modal-header">
+                <h2>Your Cart</h2>
+                <button class="close-cart-btn" id="close-cart-btn">&times;</button>
+            </div>
+            <div class="cart-modal-body" id="cart-modal-body">
+                <!-- Cart items will be rendered here -->
+                <div id="empty-cart-message" class="empty-state" style="display:none; padding: 2rem 1rem; margin-top: 0;">Your cart is empty.</div>
+            </div>
+            <div class="cart-modal-footer">
+                 <div class="cart-modal-total" id="cart-modal-total">Total: 0 FCFA</div>
+                 <!-- This button now triggers the form submission -->
+                 <button class="whatsapp-button" id="whatsapp-checkout-modal" type="submit" form="netlify-checkout-form">
+                     <i class="fab fa-whatsapp"></i> Proceed to Checkout
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Netlify Form for Checkout -->
+    <!-- This form is hidden but its fields are populated by JS before submission -->
+    <form name="checkout" id="netlify-checkout-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" style="display: none;">
+        <!-- Optional: Honeypot field for spam prevention -->
+        <p class="hidden">
+            <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
+        </p>
+        <!-- Hidden fields to capture cart data -->
+        <input type="hidden" name="form-name" value="checkout">
+        <input type="hidden" name="cart_items" id="netlify-cart-items">
+        <input type="hidden" name="cart_total" id="netlify-cart-total">
+        <input type="hidden" name="shop_name" id="netlify-shop-name">
+        <input type="hidden" name="timestamp" id="netlify-timestamp">
+        <!-- The actual submit button is styled elsewhere (whatsapp-button) -->
+        <button type="submit">Submit Order</button>
+    </form>
+    <!-- Optional: Create a simple /thank-you.html page for Netlify to redirect to after form submission -->
+
+
+    <script>
+        const productsStorageKey = 'shopProducts';
+        const customizationStorageKey = 'shopCustomization';
+        const cartStorageKey = 'shopCart'; // Explicit key for cart
+
+        let products = [];
+        let cart = [];
+        let shopCustomization = {};
+
+        // DOM Elements
+        const cartIcon = document.getElementById('cart-icon');
+        const navCartButton = document.getElementById('nav-cart');
+        const cartModal = document.getElementById('cart-modal');
+        const closeCartBtn = document.getElementById('close-cart-btn');
+        const cartModalBody = document.getElementById('cart-modal-body');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const cartSummaryBar = document.getElementById('cart-summary');
+        const cartTotalBar = document.getElementById('cart-total');
+        const cartTotalModal = document.getElementById('cart-modal-total');
+        const headerCartCount = document.getElementById('header-cart-count');
+        const navCartCount = document.getElementById('nav-cart-count');
+        const netlifyForm = document.getElementById('netlify-checkout-form');
+        const shopDescriptionElem = document.getElementById('shop-description');
+
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            applyCustomization(); // Apply colors, fonts, name, description
+            loadSections();
+            updateCartUI(); // Initial UI update for cart
+            setupEventListeners();
+        });
+
+        function loadData() {
+             products = loadFromStorage(productsStorageKey, []);
+             cart = loadFromStorage(cartStorageKey, []);
+             shopCustomization = loadFromStorage(customizationStorageKey, {});
+        }
+
+        function loadFromStorage(key, defaultValue) {
+            try {
+                const storedData = localStorage.getItem(key);
+                return storedData ? JSON.parse(storedData) : defaultValue;
+            } catch (error) {
+                console.error(`Error parsing ${key} from localStorage:`, error);
+                return defaultValue;
+            }
+        }
+
+        function saveToStorage(key, data) {
+             try {
+                localStorage.setItem(key, JSON.stringify(data));
+            } catch (error) {
+                console.error(`Error saving ${key} to localStorage:`, error);
+                showToast(`Error saving ${key}. Storage might be full.`, 'error');
+            }
+        }
+
+        // --- Customization ---
+        function applyCustomization() {
+            const primaryColor = shopCustomization.primaryColor || '#0D47A1';
+            document.documentElement.style.setProperty('--primary', primaryColor);
+            // Simple secondary color generation (lighten primary - basic)
+            // document.documentElement.style.setProperty('--secondary', lightenColor(primaryColor, 85)); // Example
+
+            const spaceNameElem = document.getElementById('space-name');
+            if (spaceNameElem) {
+                spaceNameElem.textContent = shopCustomization.spaceName || 'My Shop';
+            }
+            if (shopDescriptionElem) {
+                 shopDescriptionElem.textContent = shopCustomization.shopDescription || 'Welcome to our shop!';
+            }
+             document.title = `${shopCustomization.spaceName || 'Shop'} - Customer Interface`;
+
+             // Apply Font Combination
+             applyFontCombination(shopCustomization.fontCombination || 'manrope-sora');
+        }
+
+        // --- Font Handling ---
+        const fontMap = {
+            'manrope-sora': {
+                main: { name: 'Manrope', weights: '400;700' },
+                desc: { name: 'Sora', weights: '400;700' },
+                cssMain: "'Manrope', sans-serif",
+                cssDesc: "'Sora', sans-serif"
+            },
+            'poppins-lato': {
+                main: { name: 'Poppins', weights: '400;500;700' },
+                desc: { name: 'Lato', weights: '400;700' },
+                cssMain: "'Poppins', sans-serif",
+                cssDesc: "'Lato', sans-serif"
+            },
+            'montserrat-opensans': {
+                main: { name: 'Montserrat', weights: '400;500;700' },
+                desc: { name: 'Open Sans', weights: '400;700' },
+                cssMain: "'Montserrat', sans-serif",
+                cssDesc: "'Open Sans', sans-serif"
+            }
+        };
+
+        function applyFontCombination(comboKey) {
+            const fonts = fontMap[comboKey] || fontMap['manrope-sora']; // Fallback to default
+
+            // Set CSS Variables
+            document.documentElement.style.setProperty('--font-family-main', fonts.cssMain);
+            document.documentElement.style.setProperty('--font-family-desc', fonts.cssDesc);
+
+            // Dynamically load Google Fonts (if not already loaded)
+            loadGoogleFont(fonts.main.name, fonts.main.weights);
+            loadGoogleFont(fonts.desc.name, fonts.desc.weights);
+        }
+
+        const loadedFonts = new Set();
+        function loadGoogleFont(fontName, weights) {
+            const fontId = `${fontName}-${weights}`;
+            if (loadedFonts.has(fontId)) {
+                return; // Already loaded
+            }
+
+            const fontUrl = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@${weights}&display=swap`;
+
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = fontUrl;
+            link.id = `google-font-${fontName.toLowerCase().replace(/ /g, '-')}`; // ID for potential removal if needed
+
+            // Remove previous links for the same font family if necessary (optional)
+            // const existingLink = document.getElementById(link.id);
+            // if (existingLink) {
+            //     document.head.removeChild(existingLink);
+            // }
+
+            document.head.appendChild(link);
+            loadedFonts.add(fontId);
+            console.log(`Loading font: ${fontName} (${weights})`);
+        }
+
+
+        // --- Product Display ---
+        function createStarRating(rating) {
+            const maxStars = 5; let stars = '';
+            const roundedRating = Math.round(rating || 0);
+            for (let i = 1; i <= maxStars; i++) {
+                // Use fas for filled, far for outline
+                stars += `<i class="${i <= roundedRating ? 'fas' : 'far'} fa-star"></i>`;
+            }
+            return stars;
+        }
+
+        function renderProducts(containerId, productList) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            // Sort products by ID descending (newest first) for 'all-products'
+             const sortedList = (containerId === 'all-products-container')
+                ? [...productList].sort((a, b) => b.id - a.id)
+                : productList; // Keep original order for top/trending
+
+
+            container.innerHTML = sortedList.map(product => `
+                <div class="product-card" data-id="${product.id}">
+                    <div class="product-image" style="background-image: url(${product.image || 'https://via.placeholder.com/170x120/eee/ccc?text=No+Image'})"></div>
+                    <div class="product-info">
+                        <div class="product-title">${product.name}</div>
+                        <div class="product-category">${product.category || 'Uncategorized'}</div>
+                        <div class="product-meta">
+                             <span class="product-price">${product.price.toLocaleString()} FCFA</span>
+                             <span class="product-rating" title="Rating: ${product.rating || 0}/5">
+                                 ${createStarRating(product.rating)}
+                             </span>
+                        </div>
+                        <button class="add-to-cart-btn" data-id="${product.id}">
+                            <i class="fas fa-cart-plus"></i> Add
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleEmptyState(containerId, emptyStateId, productList) {
+            const container = document.getElementById(containerId);
+            const emptyState = document.getElementById(emptyStateId);
+            if (!container || !emptyState) return;
+
+            const hasProducts = productList.length > 0;
+            container.style.display = hasProducts ? 'flex' : 'none'; // Use flex for horizontal scroll
+            emptyState.style.display = hasProducts ? 'none' : 'block';
+            // Hide the parent container's section title if empty? Optional.
+            // container.closest('.section').style.display = hasProducts ? 'block' : 'none';
+        }
+
+        function filterProducts(query) {
+            query = query.toLowerCase();
+            if (!query) return products; // Return all if query is empty
+
+            return products.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                (p.description && p.description.toLowerCase().includes(query)) ||
+                (p.category && p.category.toLowerCase().includes(query))
+            );
+        }
+
+        function loadSections() {
+            // Example: Split products based on rating or add date (if available)
+            const topPicks = [...products].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 10);
+            // Simple trending: newest products (assuming higher ID is newer)
+            const trending = [...products].sort((a, b) => b.id - a.id).slice(0, 10);
+            const allProductsList = products; // No filtering initially
+
+            renderProducts('top-picks-container', topPicks);
+            toggleEmptyState('top-picks-container', 'empty-top-picks', topPicks);
+
+            renderProducts('trending-container', trending);
+            toggleEmptyState('trending-container', 'empty-trending', trending);
+
+            renderProducts('all-products-container', allProductsList);
+            toggleEmptyState('all-products-container', 'empty-all-products', allProductsList);
+        }
+
+        // --- Cart Management ---
+        function saveCart() {
+            saveToStorage(cartStorageKey, cart);
+        }
+
+        function calculateCartTotal() {
+            return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        }
+
+        function updateCartUI() {
+            const total = calculateCartTotal();
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            // Update Summary Bar Visibility and Content
+            if (itemCount > 0) {
+                cartTotalBar.textContent = `Total: ${total.toLocaleString()} FCFA`;
+                cartSummaryBar.classList.add('visible');
+            } else {
+                cartSummaryBar.classList.remove('visible');
+            }
+
+            // Update Cart Counts (Header & Nav)
+            const displayCount = itemCount > 0 ? itemCount : '0'; // Show '0' explicitly?
+            const showBadge = itemCount > 0;
+
+            headerCartCount.textContent = displayCount;
+            navCartCount.textContent = displayCount;
+            headerCartCount.style.display = showBadge ? 'inline-block' : 'none';
+            navCartCount.style.display = showBadge ? 'inline-block' : 'none';
+
+
+            // Update Cart Modal Content and Total
+            renderCartModalItems();
+            cartTotalModal.textContent = `Total: ${total.toLocaleString()} FCFA`;
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const cartItemIndex = cart.findIndex(item => item.id === productId);
+
+            if (cartItemIndex > -1) {
+                cart[cartItemIndex].quantity++;
+            } else {
+                // Add essential product info + quantity
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image, // Store image for cart display
+                    quantity: 1
+                });
+            }
+            saveCart();
+            updateCartUI();
+            showToast(`${product.name} added to cart!`, 'success');
+        }
+
+        function updateCartQuantity(productId, change) { // change is +1 or -1
+             const cartItemIndex = cart.findIndex(item => item.id === productId);
+             if (cartItemIndex > -1) {
+                 cart[cartItemIndex].quantity += change;
+                 if (cart[cartItemIndex].quantity <= 0) {
+                     // Remove item if quantity is zero or less
+                     cart.splice(cartItemIndex, 1);
+                 }
+                 saveCart();
+                 updateCartUI();
+             }
+        }
+
+        function removeFromCart(productId) {
+             const initialLength = cart.length;
+             cart = cart.filter(item => item.id !== productId);
+             if (cart.length < initialLength) {
+                 saveCart();
+                 updateCartUI();
+                 showToast(`Item removed from cart.`, 'info');
+             }
+        }
+
+        function renderCartModalItems() {
+            if (cart.length === 0) {
+                cartModalBody.innerHTML = ''; // Clear previous items
+                emptyCartMessage.style.display = 'block';
+                cartModalBody.appendChild(emptyCartMessage); // Ensure it's inside
+            } else {
+                emptyCartMessage.style.display = 'none';
+                cartModalBody.innerHTML = cart.map(item => `
+                    <div class="cart-item" data-id="${item.id}">
+                        <div class="cart-item-image" style="background-image: url(${item.image || 'https://via.placeholder.com/70'})"></div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">${item.price.toLocaleString()} FCFA</div>
+                             <div class="cart-item-quantity">
+                                <button class="quantity-change" data-id="${item.id}" data-change="-1" aria-label="Decrease quantity">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="quantity-change" data-id="${item.id}" data-change="1" aria-label="Increase quantity">+</button>
+                            </div>
+                        </div>
+                        <button class="cart-item-remove" data-id="${item.id}" aria-label="Remove ${item.name}">&times;</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // --- Event Listeners ---
+        function setupEventListeners() {
+            // Add to Cart Buttons (Event Delegation on main content)
+            document.querySelector('main').addEventListener('click', (e) => {
+                const button = e.target.closest('.add-to-cart-btn');
+                if (button) {
+                    const id = parseInt(button.getAttribute('data-id'));
+                    addToCart(id);
+                }
+                 // Handle clicks on product card itself (optional - maybe go to product detail page later)
+                 // const card = e.target.closest('.product-card');
+                 // if (card && !button) { // Clicked card but not the button
+                 //    const id = parseInt(card.getAttribute('data-id'));
+                 //    console.log("Card clicked:", id);
+                 //    // showProductDetails(id); // Future function
+                 // }
+            });
+
+            // Search Input
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', handleSearch);
+            searchInput.addEventListener('search', handleSearch); // Handle clearing search (X button)
+
+
+            // Cart Modal Triggers
+            cartIcon.addEventListener('click', openCartModal);
+            navCartButton.addEventListener('click', openCartModal); // Also trigger from nav
+            closeCartBtn.addEventListener('click', closeCartModal);
+            cartModal.addEventListener('click', (e) => { // Close if clicking outside content
+                if (e.target === cartModal) {
+                    closeCartModal();
+                }
+            });
+
+            // Cart Modal Actions (Event Delegation)
+            cartModalBody.addEventListener('click', (e) => {
+                const target = e.target;
+                if (target.closest('.quantity-change')) {
+                    const button = target.closest('.quantity-change');
+                    const id = parseInt(button.dataset.id);
+                    const change = parseInt(button.dataset.change);
+                    updateCartQuantity(id, change);
+                } else if (target.closest('.cart-item-remove')) {
+                     const button = target.closest('.cart-item-remove');
+                    const id = parseInt(button.dataset.id);
+                    removeFromCart(id);
+                }
+            });
+
+            // Netlify Form Submission Handler
+            netlifyForm.addEventListener('submit', handleCheckoutSubmit);
+
+            // Bottom Nav (Placeholder Actions - Add real navigation later if needed)
+             document.querySelectorAll('.bottom-nav button').forEach(button => {
+                 button.addEventListener('click', (e) => {
+                     // Don't prevent default if it's the cart button (opens modal)
+                     if (button.id !== 'nav-cart') {
+                         // e.preventDefault(); // Prevent default only for non-cart buttons if they have hrefs later
+                     }
+
+                     document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
+                     e.currentTarget.classList.add('active');
+
+                     if(button.id === 'nav-cart') {
+                         openCartModal(); // Open cart if cart nav is clicked
+                     } else if (button.id === 'nav-home') {
+                         window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top for home
+                     } else if (button.id === 'nav-categories') {
+                         // Scroll to categories section if exists, or implement category view
+                         const categorySection = document.querySelector('.all-products-section'); // Example target
+                         if (categorySection) {
+                             categorySection.scrollIntoView({ behavior: 'smooth' });
+                         }
+                         showToast('Categories view not implemented yet.', 'info');
+                     } else if (button.id === 'nav-profile') {
+                         showToast('Profile view not implemented yet.', 'info');
+                     }
+                 });
+             });
+        }
+
+        function handleSearch(e) {
+            const query = e.target.value;
+            const filtered = filterProducts(query);
+            const isSearching = query.length > 0;
+
+            // Update only the 'All Products' section for search results
+            renderProducts('all-products-container', filtered);
+            toggleEmptyState('all-products-container', 'empty-all-products', filtered);
+
+            // Hide other sections during search
+            document.querySelector('.shop-info-section').style.display = isSearching ? 'none' : 'block';
+            document.querySelector('.top-picks-section').style.display = isSearching ? 'none' : 'block';
+            document.querySelector('.trending-section').style.display = isSearching ? 'none' : 'block';
+            // Adjust title for 'All Products' section when searching
+            document.querySelector('.all-products-section h2').textContent = isSearching ? 'Search Results' : 'All Products';
+        }
+
+
+        // --- Cart Modal Logic ---
+        function openCartModal() {
+            renderCartModalItems(); // Ensure content is up-to-date
+            cartModal.classList.add('visible');
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCartModal() {
+            cartModal.classList.remove('visible');
+            document.body.style.overflow = ''; // Restore body scrolling
+        }
+
+        // --- Checkout Process (Netlify Form + WhatsApp) ---
+        function handleCheckoutSubmit(event) {
+             event.preventDefault(); // Prevent default form submission initially
+
+             if (cart.length === 0) {
+                showToast("Your cart is empty.", 'warning');
+                return;
+            }
+
+            // 1. Prepare data for Netlify and WhatsApp
+            const total = calculateCartTotal();
+            let netlifyItemsString = '';
+            let whatsappMessage = `Hello ${shopCustomization.spaceName || 'Shop Admin'},\nI would like to order:\n\n`;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                whatsappMessage += `- ${item.name} x ${item.quantity} (${item.price.toLocaleString()} FCFA each)\n`;
+                netlifyItemsString += `${item.name} (ID: ${item.id}) x ${item.quantity} @ ${item.price} FCFA; `;
+            });
+
+            whatsappMessage += `\nTotal: ${total.toLocaleString()} FCFA\n\n`;
+            whatsappMessage += `Please confirm my order.\nThank you!`;
+
+            // 2. Populate hidden Netlify form fields
+            document.getElementById('netlify-cart-items').value = netlifyItemsString.trim();
+            document.getElementById('netlify-cart-total').value = total;
+            document.getElementById('netlify-shop-name').value = shopCustomization.spaceName || 'Unknown Shop';
+            document.getElementById('netlify-timestamp').value = new Date().toISOString();
+
+            // 3. Submit the form to Netlify programmatically
+            // We assume Netlify's JS will handle the actual AJAX submission
+            // We just need to trigger the submit event *after* populating fields
+            console.log("Submitting order to Netlify...");
+            // netlifyForm.submit(); // This might bypass Netlify's AJAX handling if not careful.
+            // Instead, let the button's default type="submit" handle it,
+            // ensuring the 'data-netlify="true"' attribute is processed.
+
+            // 4. Prepare and open WhatsApp link (AFTER a short delay to allow form submission)
+            setTimeout(() => {
+                openWhatsAppLink(whatsappMessage);
+            }, 500); // Delay to increase chance of form submission starting
+
+            // 5. Optional: Clear cart and close modal after initiating checkout
+             setTimeout(() => {
+                 cart = [];
+                 saveCart();
+                 updateCartUI();
+                 closeCartModal();
+                 showToast("Order submitted! Opening WhatsApp...", 'success');
+             }, 800); // Slightly longer delay for UI changes
+
+             // 6. Simulate notification for Admin Panel (client-side)
+             simulateAdminNotification(total);
+        }
+
+        function openWhatsAppLink(message) {
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappNumber = shopCustomization.whatsappNumber || '';
+            let whatsappUrl = '';
+
+            if (whatsappNumber.trim() !== '') {
+                const cleanedNumber = whatsappNumber.replace(/[\s-]/g, '').replace(/[^+\d]/g, '');
+                 if (cleanedNumber.startsWith('+')) {
+                     // Remove '+' for wa.me link format, keep it for the number itself if needed elsewhere
+                     whatsappUrl = `https://wa.me/${cleanedNumber.substring(1)}?text=${encodedMessage}`;
+                 } else if (cleanedNumber.length > 5) { // Basic check for a valid number length
+                     whatsappUrl = `https://wa.me/${cleanedNumber}?text=${encodedMessage}`;
+                 } else {
+                      console.warn("WhatsApp number seems invalid:", whatsappNumber);
+                      whatsappUrl = `https://wa.me/?text=${encodedMessage}`; // Fallback
+                      showToast("Shop's WhatsApp number seems invalid. Opening WhatsApp with message only.", 'warning');
+                 }
+            } else {
+                whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+                showToast("Shop's WhatsApp number not configured. Opening WhatsApp with message only.", 'info');
+            }
+
+            console.log("Opening WhatsApp URL:", whatsappUrl);
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function simulateAdminNotification(totalAmount) {
+             try {
+                 const adminNotifications = JSON.parse(localStorage.getItem('shopNotifications') || '[]');
+                 adminNotifications.unshift({
+                     id: Date.now(),
+                     message: `New Order Submitted (Total: ${totalAmount.toLocaleString()} FCFA)`,
+                     timestamp: Date.now()
+                 });
+                  if (adminNotifications.length > 30) adminNotifications.pop(); // Limit size
+                 localStorage.setItem('shopNotifications', JSON.stringify(adminNotifications));
+             } catch (e) { console.error("Failed to simulate admin notification", e); }
+        }
+
+
+         // --- Utility: Simple Toast Notification ---
+         let toastTimeout;
+         function showToast(message, type = 'info') { // types: info, success, warning, error
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) {
+                document.body.removeChild(existingToast);
+                clearTimeout(toastTimeout);
+            }
+
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.className = 'toast-notification';
+
+            // Optional: Add type-specific styling
+            if (type === 'success') toast.style.backgroundColor = 'rgba(28, 138, 61, 0.9)'; // Success Green
+            else if (type === 'warning') toast.style.backgroundColor = 'rgba(245, 159, 0, 0.9)'; // Warning Orange
+            else if (type === 'error') toast.style.backgroundColor = 'rgba(217, 48, 37, 0.9)'; // Error Red
+            else toast.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'; // Default info
+
+            document.body.appendChild(toast);
+
+            // Fade in
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10); // Short delay ensures transition triggers
+
+            // Fade out and remove
+            clearTimeout(toastTimeout); // Clear previous timeout if any
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                     if (toast.parentNode) { // Check if still exists
+                         document.body.removeChild(toast);
+                     }
+                }, 500); // Remove after fade out transition (0.5s)
+            }, 3000); // Show for 3 seconds
+         }
+
+         // Basic color lighten function (example - if needed for secondary color)
+        // function lightenColor(hex, percent) {
+        //     hex = hex.replace(/^\s*#|\s*$/g, '');
+        //     if(hex.length == 3){ hex = hex.replace(/(.)/g, '$1$1'); }
+        //     const r = parseInt(hex.substr(0, 2), 16), g = parseInt(hex.substr(2, 2), 16), b = parseInt(hex.substr(4, 2), 16);
+        //     return '#' +
+        //        ((0|(1<<8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
+        //        ((0|(1<<8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
+        //        ((0|(1<<8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+        // }
+
+    </script>
+</body>
+</html>
